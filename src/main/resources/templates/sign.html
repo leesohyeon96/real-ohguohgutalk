@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaft.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/bottstrap.min.css}">
+    <title>title</title>
+</head>
+<body>
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>회원 가입</h2>
+        </div>
+        <h4 class="mb-3">회원 정보 입력</h4>
+        <form action="" th:action th:object="${member}" method="post">
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류</p>
+            </div>
+
+            <div>
+                <label for="id">로그인 ID</label>
+                <input type="text" id="id" th:field="*{id}" class="form-control" th:errorclass="field-error">
+                <div class="field-error" th:errors="*{id}"></div>
+            </div>
+            <div>
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="field-error">
+                <div class="field-error" th:errors="*{password}"></div>
+            </div>
+            <div>
+                <label for="usernick">닉네임</label>
+                <input type="text" id="usernick" th:field="*{usernick}" class="form-control" th:errorclass="field-error">
+                <div class="field-error" th:errors="*{usernick}"></div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
