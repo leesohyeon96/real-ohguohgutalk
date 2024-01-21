@@ -1,14 +1,13 @@
 package com.shl.ohguohgutalk.repository;
 
 import com.shl.ohguohgutalk.entity.Member;
-import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Slf4j
-public class LoginRepository {
+public interface LoginRepository extends JpaRepository<Member, Integer> {
 
-    public void save(Member member) {
-        log.info("save Member : {}", member);
-    }
+    @NotNull // TODO: 왼쪽꺼 뭔지 알아보고, 왜 자꾸 노란줄 뜨는지 해결하기!
+    Member save(@NotNull Member member);
 }

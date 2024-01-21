@@ -6,11 +6,39 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Ohguohgutalk_Home</title>
-    <h1>책임없는 쾌락 OhguOhguTalk에 오신걸 환영합니다.</h1>
     <!-- 로그인 만들기 spring security 적용은 나중에 -->
-    <button onclick="">회원가입</button>
 </head>
 <body>
+<h1>책임없는 쾌락 OhguOhguTalk에 오신걸 환영합니다.</h1>
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>로그인</h2>
+    </div>
+    <form action="login.html" th:action th:object="${member}" method="post">
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+        </div>
 
+        <div>
+            <label for="userId">로그인 ID</label>
+            <input type="text" id="userId" th:field="*{userId}" class="form-control" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{userId}"></div>
+        </div>
+        <div>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{password}"></div>
+        </div>
+
+        <hr class="my-4">
+        <div class="row">
+            <div class="col">
+                <button>로그인</button>
+                <button type="button" onclick="location.href='sign.html'"
+                        th:onclick="|location.href='@{/sign}'|">회원가입</button>
+            </div>
+        </div>
+    </form>
+</div>
 </body>
 </html>

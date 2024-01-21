@@ -1,21 +1,19 @@
 package com.shl.ohguohgutalk.controller;
 
+import com.shl.ohguohgutalk.dto.MemberDTO;
 import com.shl.ohguohgutalk.entity.Member;
 import com.shl.ohguohgutalk.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.support.RequestContextUtils;
-
-import java.util.Collections;
-import java.util.Map;
 
 @Controller
 @Slf4j
@@ -34,8 +32,11 @@ public class LoginController {
      * @return 로그인 화면
      */
     @GetMapping({"/", "login"})
-    public String home(HttpServletRequest request) {
+    public String home(HttpServletRequest request, @ModelAttribute MemberDTO member, Model mv) {
         // TODO: 로그인 시 이전 url로 돌아가는 설정 필요
+        mv.addAttribute("member", member);
+
+        //
 //        String url = request.getHeader("Referer");
 //
 //        if (url == null) {
@@ -54,8 +55,12 @@ public class LoginController {
      * 로그인
      */
     @PostMapping("/login")
-    public void login() {
+    public String login(@Validated @ModelAttribute MemberDTO member, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "login";
+        }
         // TODO: 로그인 로직 구현 필요
+        return "redirect:/"; // 만들 페이지 redirect:/chars 로 만들기
     }
 
     @GetMapping("/logout")
@@ -80,6 +85,6 @@ public class LoginController {
         }
 
         loginService.save(member);
-        return "redirect:/login"; // getMapping으로 들어가는거 맞겠지?
+        return "redirect:/login";
     }
 }
