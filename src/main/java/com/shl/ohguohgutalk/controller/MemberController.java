@@ -91,7 +91,7 @@ public class MemberController {
     @PostMapping("/sign")
     public String signUpAndSelectLogin(@Validated @ModelAttribute Member member, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            log.info("sign error : {}", bindingResult.hasErrors());
+            log.info("sign not validated : {}", bindingResult.hasErrors());
             return "sign";
         }
 
