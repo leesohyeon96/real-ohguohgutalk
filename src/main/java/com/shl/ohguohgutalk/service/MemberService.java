@@ -1,6 +1,7 @@
 package com.shl.ohguohgutalk.service;
 
 import com.shl.ohguohgutalk.entity.Member;
+import com.shl.ohguohgutalk.exception.CustomizedException;
 import com.shl.ohguohgutalk.repository.MemberRepository;
 import com.shl.ohguohgutalk.util.SHA256Util;
 import lombok.extern.slf4j.Slf4j;
@@ -26,18 +27,16 @@ public class MemberService {
      * @param member {@link Member}
      */
     public void save(Member member) {
-        log.info("member : {}", member);
+        log.info("member : {}", member); // 애초에 여기서부터 문제가있네
 
         // TODO: functionalInterface 만들어서 sha-256 암호화 시켜서 저장하기
         // SHA256 암호화 : 단방향 해시 함수 사용
         String hashedPwd = sha256Util.getSHA256HashedPwd(member.getPassword());
         if (hashedPwd.equals(member.getPassword())) {
             log.info("암호화 처리 안됨, hashedPwd = {}", hashedPwd);
-            // exceptionHandler 처리 해볼까? > exception 발생시키면 thymeleaf 에서 어떻게 처리되는지도 하기!
+            throw new CustomizedException("비밀번호 딴걸로 해주십셔", member);
         }
-
-
-
+        member.setPassword(hashedPwd);
         memberRepository.save(member);
     }
 

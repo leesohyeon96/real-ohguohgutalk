@@ -85,8 +85,11 @@ public class MemberController {
      */
     @GetMapping("/sign")
     public String signUp(@ModelAttribute Member member) {
+        log.info("get:/sign member : {}", member);
         return "sign";
     }
+
+    // TODO: userId 중복체크하는 method 만들기
 
     @PostMapping("/sign")
     public String signUpAndSelectLogin(@Validated @ModelAttribute Member member, BindingResult bindingResult) {

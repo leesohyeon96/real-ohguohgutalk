@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaft.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/css/bottstrap.min.css}">
@@ -25,6 +25,7 @@
                 <label for="password">비밀번호</label>
                 <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="field-error">
                 <div class="field-error" th:errors="*{password}"></div>
+                <b th:text="${password}"></b>
             </div>
             <div>
                 <label for="userNick">닉네임</label>
@@ -40,8 +41,11 @@
             <div class="row">
                 <div class="col">
                     <button type="submit">회원가입</button>
-                    <button type="button" onclick="location.href='login.html'"
-                            th:onclick="|location.href='@{/login}'|">취소</button>
+                    <button type="button"
+
+                            th:onclick="|location.href='@{/}'|">
+
+                        취소</button>
                 </div>
             </div>
         </form>

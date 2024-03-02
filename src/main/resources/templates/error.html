@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Withdrawal</title>
+</head>
+<body>
+<h1>Error 발생</h1>
+
+<!-- error 변수의 값 출력 -->
+<p th:if="${errorMessage}" th:text="${errorMessage}" style="color: red"/>
+<form th:action="${url}" th:object="${member}" method="get">
+    <input type="text" id="userId" th:field="${member.userId}" hidden="hidden">
+    <input type="password" id="password" th:field="${member.password}" hidden="hidden">
+    <input type="text" id="userNick" th:field="${member.userNick}" class="form-control" hidden="hidden">
+    <input type="email" id="email" th:field="${member.email}" class="form-control" hidden="hidden">
+    <button type="submit">다시 회원가입하러가기</button>
+</form>
+
+</form>
+</body>
+</html>
