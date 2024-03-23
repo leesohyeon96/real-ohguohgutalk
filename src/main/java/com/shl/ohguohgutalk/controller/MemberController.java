@@ -2,20 +2,18 @@ package com.shl.ohguohgutalk.controller;
 
 import com.shl.ohguohgutalk.dto.MemberDTO;
 import com.shl.ohguohgutalk.entity.Member;
+import com.shl.ohguohgutalk.exception.EmptyParameterException;
 import com.shl.ohguohgutalk.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.NoSuchAlgorithmException;
 
 @Controller
 @Slf4j
@@ -33,7 +31,7 @@ public class MemberController {
      * 로그인 화면(=첫 화면) 이동
      * @return 로그인 화면
      */
-    @GetMapping("/")
+    @GetMapping({"/", "/home"})
     public String home(HttpServletRequest request, @ModelAttribute MemberDTO member, Model mv) {
         // TODO: 로그인 시 이전 url로 돌아가는 설정 필요
         mv.addAttribute("member", member);
@@ -89,7 +87,17 @@ public class MemberController {
         return "sign";
     }
 
-    // TODO: userId 중복체크하는 method 만들기
+    @ResponseBody
+    @GetMapping("/check/{userId}")
+    public boolean checkUserId(@PathVariable @NotNull String userId) {
+        if (userId.equals("null")) {
+            log.info("userId is empty or null : {}", userId);
+            throw new EmptyParameterException("아이디값이 비어있습니다.", userId, "home");
+        }
+        // validation 체크 하고 로직 만들기
+        log.info("userId : {}", userId);
+        return memberService.checkUserId(userId);
+    }
 
     @PostMapping("/sign")
     public String signUpAndSelectLogin(@Validated @ModelAttribute Member member, BindingResult bindingResult) {

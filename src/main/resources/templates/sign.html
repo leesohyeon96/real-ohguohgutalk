@@ -21,6 +21,7 @@
                 <input type="text" id="userId" th:field="*{userId}" class="form-control" th:errorclass="field-error">
                 <div class="field-error" th:errors="*{userId}"></div>
             </div>
+            <button id="checkUserId" type="button" onclick="checkUserIdFunction()" disabled>ID 중복체크</button>
             <div>
                 <label for="password">비밀번호</label>
                 <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="field-error">
@@ -40,15 +41,50 @@
             <hr class="my-4">
             <div class="row">
                 <div class="col">
-                    <button type="submit">회원가입</button>
-                    <button type="button"
-
-                            th:onclick="|location.href='@{/}'|">
-
-                        취소</button>
+                    <button type="submit" id="signBtn" disabled>회원가입</button>
+                    <button type="button" th:onclick="|location.href='@{/}'|">취소</button>
                 </div>
             </div>
         </form>
     </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script th:inline="javascript">
+
+    // input 요소에 onChange 이벤트를 추가하여 값이 변경될 때마다 userId 값을 업데이트합니다.
+    var userIdInput = document.getElementById("userId");
+    userIdInput.addEventListener('input', function() {
+        // 값 지우면 회원가입 다시 비활성화
+        var userIdValue = this.value.trim();
+        var checkUserId = document.getElementById('checkUserId');
+        checkUserId.disabled = userIdValue === '';
+        // userId 값을 Thymeleaf 템플릿으로 업데이트합니다.
+
+        $("#signBtn").attr("disabled", true);
+        thymeleafUpdate(userIdValue);
+    });
+
+    // Thymeleaf 템플릿으로 userId 값을 업데이트하는 함수입니다.
+    function thymeleafUpdate(userId) {
+        // Thymeleaf 템플릿에서 userId 값을 업데이트합니다.
+        userIdInput.value = userId;
+    }
+
+    function checkUserIdFunction() {
+        console.log("아예안오는걸로?");
+        $.ajax({
+            url: '/check/' + userIdInput.value,
+            method: 'get',
+            success: function (data) {
+                if (data === true) {
+                    alert("이미 존재하는 userId 입니다.");
+                    $("#signBtn").attr("disabled", true);
+                } else {
+                    alert("사용가능한 userId 입니다.");
+                    $("#signBtn").attr("disabled", false);
+                }
+            }
+        })
+    }
+</script>
 </body>
 </html>

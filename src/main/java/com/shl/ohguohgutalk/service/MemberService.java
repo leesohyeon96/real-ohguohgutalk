@@ -40,4 +40,13 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    /**
+     * 아이디 중복체크 기능
+     * @param userId 중복체크할 userId
+     * @return 중복여부
+     */
+    public boolean checkUserId(String userId) {
+        Member member = memberRepository.findByUserId(userId);
+        return member != null; // null이 아니면 존재하는거기때문에 true 반환
+    }
 }
