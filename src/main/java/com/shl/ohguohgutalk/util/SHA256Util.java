@@ -1,5 +1,6 @@
 package com.shl.ohguohgutalk.util;
 
+import com.shl.ohguohgutalk.entity.Member;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -12,32 +13,35 @@ import java.security.SecureRandom;
 @Slf4j
 @Component
 public class SHA256Util {
-    // TODO : 키-스트레칭 (적용할지 말지 고민 -> sha 한걸 여러번) >> 후에 적용하기
+    // TODO: if) 암호화가 더 늘어난다면 EncryInteface 를 만들어서
+    // encrypt() 만들어서 각 SHAEncrypt, 다른암호화Encrypt class 로 implements 해서
+    // 각 클래스에서 사용하도록 하기
 
+    // TODO : 키-스트레칭 (적용할지 말지 고민 -> sha 한걸 여러번) >> 후에 적용하기
     /**
-     * 비밀번호 암호화 - SHA256
-     * @param pwd 암호화 될 password
+     * 회원가입 시 비밀번호 암호화 - SHA256
+     * @param member {@link Member}
      */
-    public String getSHA256HashedPwd(@NotEmpty String pwd)  {
-        String hashedPwd = "";
+    public Member getSHA256HashedPwd(@NotEmpty Member member) {
+        String password = member.getPassword();
         String salt = getSalt();
+        member.setSalt(salt);
 
         try {
-            hashedPwd = getHashedPwd("SHA-256", pwd, salt);
+            member.setPassword(getHashedPwd("SHA-256", password, salt));
         } catch (NoSuchAlgorithmException e) {
             // NoSuchAlgorithmException : 특정 암호 알고리즘이 요구되었음에도 현재의 환경에서는 사용가능하지 않은 경우 발생
             log.error("NoSuchAlgorithmException 발생 - 대체 알고리즘(SHA-1) 사용 : {}", e);
-
             try {
                 // 대체 알고리즘(SHA-1) 사용
-                hashedPwd = getHashedPwd("SHA-1", pwd, salt);
+                member.setPassword(getHashedPwd("SHA-1", password, salt));
             } catch (NoSuchAlgorithmException ex) {
                 log.error("대체 알고리즘(SHA-1)도 사용 불가능 : {}", ex);
                 // 회원가입에 실패하였습니다.
             }
         }
 
-        return hashedPwd;
+        return member;
     }
 
     /**
@@ -79,5 +83,30 @@ public class SHA256Util {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();
+    }
+
+    /**
+     * 로그인 시 비밀번호 암호화
+     * @param password 암호화 할 비밀번호
+     * @param savedSalt 저장된 salt
+     */
+    public String getSHA256HashedPwdBySalt(String password, String savedSalt) {
+        String hasedPwd = null;
+
+        try {
+            hasedPwd = getHashedPwd("SHA-256", password, savedSalt);
+        } catch (NoSuchAlgorithmException e) {
+            // NoSuchAlgorithmException : 특정 암호 알고리즘이 요구되었음에도 현재의 환경에서는 사용가능하지 않은 경우 발생
+            log.error("NoSuchAlgorithmException 발생 - 대체 알고리즘(SHA-1) 사용 : {}", e);
+            try {
+                // 대체 알고리즘(SHA-1) 사용
+                hasedPwd = getHashedPwd("SHA-1", password, savedSalt);
+            } catch (NoSuchAlgorithmException ex) {
+                log.error("대체 알고리즘(SHA-1)도 사용 불가능 : {}", ex);
+                // 회원가입에 실패하였습니다.
+            }
+        }
+
+        return hasedPwd;
     }
 }
