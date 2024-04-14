@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat Room</title>
+</head>
+<body>
+
+<!-- 여기서 바로 SockJS 만들어서 연결해버리기! -->
+    <h1> 연결해버렷!! </h1>
+
+<!--
+
+[1번쨰?]
+<script>
+        var socket = new SockJS('/chat');
+        var stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function(frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/messages', function(message) {
+                showMessage(JSON.parse(message.body));
+            });
+        });
+
+        function sendMessage() {
+            var sender = "User"; // Change it with user name or get from input
+            var content = document.getElementById('message-input').value;
+            var message = {
+                sender: sender,
+                content: content
+            };
+            stompClient.send("/app/chat", {}, JSON.stringify(message));
+        }
+
+        function showMessage(message) {
+            var messageElement = document.createElement('li');
+            messageElement.textContent = message.sender + ": " + message.content;
+            document.getElementById('messages').appendChild(messageElement);
+        }
+    </script>
+
+
+ [2번쨰?]
+        // 버튼 클릭 이벤트 핸들러 등록
+        document.getElementById('connectButton').addEventListener('click', function() {
+            // WebSocket 및 STOMP 연결 시작
+            connectToChat();
+        });
+
+        function connectToChat() {
+            var socket = new SockJS('/ws-connect'); // WebSocket 서버 엔드포인트 설정
+            var stompClient = Stomp.over(socket); // STOMP 클라이언트 생성
+
+            stompClient.connect({}, function(frame) {
+                console.log('Connected: ' + frame);
+                // 연결이 성공한 후 처리할 작업 추가
+            });
+        }
+
+
+-->
+
+</body>
+</html>

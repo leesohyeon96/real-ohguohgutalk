@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Slf4j
-@RequestMapping("/")
 public class MemberController {
 
     private final ModelMapper mapper;
