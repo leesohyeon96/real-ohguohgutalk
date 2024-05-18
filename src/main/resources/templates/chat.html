@@ -6,63 +6,74 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Chat Room</title>
+    <!-- SockJS 라이브러리 로드 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <!-- STOMP 라이브러리 로드 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 </head>
 <body>
 
-<!-- 여기서 바로 SockJS 만들어서 연결해버리기! -->
-    <h1> 연결해버렷!! </h1>
+<h1>Chat Room</h1>
+<div id="chatArea">
+    <div>뭔가가 생기긴하나?</div>
+</div>
+<input type="text" id="messageInput" placeholder="메시지를 입력하세요">
+<button onclick="sendMessage()">전송</button>
 
-<!--
-
-[1번쨰?]
 <script>
-        var socket = new SockJS('/chat');
-        var stompClient = Stomp.over(socket);
+    var chatArea = document.getElementById('chatArea');
 
-        stompClient.connect({}, function(frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/messages', function(message) {
-                showMessage(JSON.parse(message.body));
-            });
+    window.BeforeUnloadEvent = function () {
+        if (stompClient !== null) {
+            stompClient.disconnect();
+            console.log("stopClient Successfully disconnect");
+        }
+    }
+
+    var chatList = [[${chatList}]]; // db에서 받아온 chatList 래 ㅇㅇ (어케?)
+    var socket = new SockJS('/ws-connect');
+    var stompClient = Stomp.over(socket); // stompClient.disconnect() -> 채팅방 나가기 할때 socket 끊어줘야할듯
+
+    stompClient.connect({}, function(frame) {
+        showOldMessages(chatList);
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/greetings', function(message) { // /topic/greetings 를 구독함
+            showMessage(JSON.parse(message.body));
         });
+    });
 
-        function sendMessage() {
-            var sender = "User"; // Change it with user name or get from input
-            var content = document.getElementById('message-input').value;
-            var message = {
-                sender: sender,
-                content: content
-            };
-            stompClient.send("/app/chat", {}, JSON.stringify(message));
+    function sendMessage() {
+        var messageInput = document.getElementById('messageInput');
+        var messageContent = messageInput.value.trim();
+        if (messageContent) {
+            stompClient.send("/app/talk", {}, JSON.stringify({ content: messageContent })); // sender: 추가해서 보내줄 수도 있음 (나중에)
+            // /app/talk 으로 send 하면 /app 은 메시지 브로커에 의해 prefix(websocketBrokerConfiguration 에서 설정함)로 무시되고 talk 만 요청으로 가게 됨)
+            messageInput.value = '';
         }
+    }
 
-        function showMessage(message) {
-            var messageElement = document.createElement('li');
-            messageElement.textContent = message.sender + ": " + message.content;
-            document.getElementById('messages').appendChild(messageElement);
+    // 채팅방 들어왔을 때 이전 채팅 다 같이 보여야 함 ㅇㅇ
+    function showMessage(message) {
+        console.log("message : ", message);
+        // TODO: showOldMessage 하위에 붙도록 수정 필요
+        chatArea.innerHTML += '<div>' + message.sender + ': ' + JSON.parse(message.message).content + '</div>';
+        // 인제 이거 채팅 시작하면 옜날 꺼 다 보여주는데
+        // - 첨에만 여러개 자주보이는건 redis 에 넣어놓도록??
+
+    }
+
+    function showOldMessages(chatList) {
+        // axios("/get/chats/")
+        // 저거 치면 showMessage()해서 신규꺼도 같이 보이게 해야되는뎀
+        if(chatList != null) {
+            for(chat in chatList) {
+                chatArea.innerHTML += '<div>' + chatList[chat].sender + ': ' + chatList[chat].message + '</div>';
+                chatArea.innerHTML += '<div>' + '--------- 이전 채팅 -----------' + '</div>';
+                // 맨 첨에 div 만들어서 얘부터 보이게 함
+            }
         }
-    </script>
-
-
- [2번쨰?]
-        // 버튼 클릭 이벤트 핸들러 등록
-        document.getElementById('connectButton').addEventListener('click', function() {
-            // WebSocket 및 STOMP 연결 시작
-            connectToChat();
-        });
-
-        function connectToChat() {
-            var socket = new SockJS('/ws-connect'); // WebSocket 서버 엔드포인트 설정
-            var stompClient = Stomp.over(socket); // STOMP 클라이언트 생성
-
-            stompClient.connect({}, function(frame) {
-                console.log('Connected: ' + frame);
-                // 연결이 성공한 후 처리할 작업 추가
-            });
-        }
-
-
--->
-
+    }
+</script>
 </body>
 </html>

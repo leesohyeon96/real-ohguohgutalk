@@ -12,6 +12,7 @@ import lombok.Builder;
  */
 @Builder
 public record ChatDTO(MessageType type, String roomId, String sender, String message, String time) {
+    // *record : MongoDB 와 상호작용은 가능하나, Spring Data mongoDB는 record 를 지원하지 않음
 
     public enum MessageType {
         ENTER, TALK, LEAVE;
