@@ -4,6 +4,7 @@ import com.shl.ohguohgutalk.dto.ChatDTO;
 import com.shl.ohguohgutalk.entity.Chat;
 import com.shl.ohguohgutalk.service.TalkService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController // TODO: @reuqestBody, responseBody 안해도 되는 것 필요한지 보고 바꾸던지 하기
 @Slf4j
@@ -54,7 +56,6 @@ public class TalkController {
         // 저장하고 해당 내용 반환? 해서 보여주기
         DateTimeFormatter yyyyMMddHHmm = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 
-
         return new ChatDTO(ChatDTO.MessageType.ENTER, "roomId", "누군가 ", message, chat.getLocalDateTime().format(yyyyMMddHHmm));
     }
 
@@ -69,18 +70,19 @@ public class TalkController {
        : @MessageMapping("talk")을 가진 메소드를 찾아 도달함 !
      */
 
-    // redis 도 사용할 수 있도록 해보자귯 ->
-    @GetMapping("")
+    @GetMapping("/")
     public List<ChatDTO> getTalkList() {
         List<Chat> talkList = talkService.getTalkList();
 
         // domain -> dto 변환 후 반환
-//        modelMapper.typeMap(
-//          talkList -> chatDTO 로 변환
-//          LocalDateTime -> String 변환필요함
-//        );
+        modelMapper.typeMap(Chat.class, ChatDTO.class).addMappings(mapper -> {
+            mapper.using((Converter<LocalDateTime, String>) context -> context.getSource().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+                    .map(Chat::getLocalDateTime, ChatDTO::setTime);
+        });
 
-        return null;
+        return talkList.stream()
+                .map(chat -> modelMapper.map(chat, ChatDTO.class))
+                .collect(Collectors.toList());
     }
 
 

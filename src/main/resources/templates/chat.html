@@ -31,7 +31,7 @@
         }
     }
 
-    var chatList = [[${chatList}]]; // db에서 받아온 chatList 래 ㅇㅇ (어케?)
+    var chatList = '[[${chatList}]]'; // db에서 받아온 chatList 래 ㅇㅇ (어케?)
     var socket = new SockJS('/ws-connect');
     var stompClient = Stomp.over(socket); // stompClient.disconnect() -> 채팅방 나가기 할때 socket 끊어줘야할듯
 
