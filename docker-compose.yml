@@ -11,7 +11,7 @@ services:
     environment:
       REDIS_PASSWORD: shlRedisPwd
     command: redis-server --requirepass $$REDIS_PASSWORD
-    restart: always
+#    restart: always
 
   # mongodb 설정
   mongodb:
@@ -25,7 +25,7 @@ services:
       MONGO_INITDB_DATABASE: chat
     volumes:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    restart: always
+#    restart: always
 
   # mysql 설정
   mysql:
@@ -38,5 +38,5 @@ services:
       MYSQL_DATABASE: ohgutalk
       MYSQL_USER: shl
       MYSQL_PASSWORD: greedy
-    restart: always
+#    restart: always
 

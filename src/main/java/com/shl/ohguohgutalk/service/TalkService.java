@@ -24,7 +24,7 @@ public class TalkService {
     public void saveChats(Chat chat) {
         // mongoDB 사용해서 저장!
         talkRepository.save(chat);
-        redisCacheUtil.deleteCachedData("chat"); // key 에 비밀이 있는거같은뎅 > cannot get jedis connection 에러 왜 나는지 알아보기 ~
+        redisCacheUtil.deleteCachedData("chat");
     }
 
     public List<Chat> getTalkList() {

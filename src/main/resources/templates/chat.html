@@ -16,7 +16,7 @@
 
 <h1>Chat Room</h1>
 <div id="chatArea">
-    <div>뭔가가 생기긴하나?</div>
+
 </div>
 <input type="text" id="messageInput" placeholder="메시지를 입력하세요">
 <button onclick="sendMessage()">전송</button>
@@ -31,9 +31,9 @@
         }
     }
 
-    var chatList = '[[${chatList}]]'; // db에서 받아온 chatList 래 ㅇㅇ (어케?)
+    var chatList = '[[${chatList}]]';
     var socket = new SockJS('/ws-connect');
-    var stompClient = Stomp.over(socket); // stompClient.disconnect() -> 채팅방 나가기 할때 socket 끊어줘야할듯
+    var stompClient = Stomp.over(socket); // stompClient.disconnect() -> 채팅방 나가기 할때 socket 끊어주기
 
     stompClient.connect({}, function(frame) {
         showOldMessages(chatList);
@@ -53,24 +53,21 @@
         }
     }
 
-    // 채팅방 들어왔을 때 이전 채팅 다 같이 보여야 함 ㅇㅇ
+    // 채팅방 들어왔을 때 이전 채팅 다 같이 보여야 함
     function showMessage(message) {
         console.log("message : ", message);
         // TODO: showOldMessage 하위에 붙도록 수정 필요
         chatArea.innerHTML += '<div>' + message.sender + ': ' + JSON.parse(message.message).content + '</div>';
-        // 인제 이거 채팅 시작하면 옜날 꺼 다 보여주는데
-        // - 첨에만 여러개 자주보이는건 redis 에 넣어놓도록??
 
     }
 
     function showOldMessages(chatList) {
         // axios("/get/chats/")
-        // 저거 치면 showMessage()해서 신규꺼도 같이 보이게 해야되는뎀
         if(chatList != null) {
             for(chat in chatList) {
                 chatArea.innerHTML += '<div>' + chatList[chat].sender + ': ' + chatList[chat].message + '</div>';
                 chatArea.innerHTML += '<div>' + '--------- 이전 채팅 -----------' + '</div>';
-                // 맨 첨에 div 만들어서 얘부터 보이게 함
+
             }
         }
     }
